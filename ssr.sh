@@ -330,7 +330,7 @@ Set_config_protocol_param(){
 	do
 	echo -e "请输入要设置的ShadowsocksR账号 欲限制的设备数 (${Green_font_prefix} auth_* 系列协议 不兼容原版才有效 ${Font_color_suffix})"
 	echo -e "${Tip} 设备数限制：每个端口同一时间能链接的客户端数量(多端口模式，每个端口都是独立计算)，建议最少 2个。"
-	ssr_protocol_param=""
+	ssr_protocol_param="9998"
 	expr ${ssr_protocol_param} + 0 &>/dev/null
 	if [[ $? == 0 ]]; then
 		if [[ ${ssr_protocol_param} -ge 1 ]] && [[ ${ssr_protocol_param} -le 9999 ]]; then
@@ -349,7 +349,7 @@ Set_config_speed_limit_per_con(){
 	do
 	echo -e "请输入要设置的每个端口 单线程 限速上限(单位：KB/S)"
 	echo -e "${Tip} 单线程限速：每个端口 单线程的限速上限，多线程即无效。"
-	ssr_speed_limit_per_con=0
+	ssr_speed_limit_per_con=131071
 	expr ${ssr_speed_limit_per_con} + 0 &>/dev/null
 	if [[ $? == 0 ]]; then
 		if [[ ${ssr_speed_limit_per_con} -ge 1 ]] && [[ ${ssr_speed_limit_per_con} -le 131072 ]]; then
@@ -369,7 +369,7 @@ Set_config_speed_limit_per_user(){
 	echo
 	echo -e "请输入要设置的每个端口 总速度 限速上限(单位：KB/S)"
 	echo -e "${Tip} 端口总限速：每个端口 总速度 限速上限，单个端口整体限速。"
-	ssr_speed_limit_per_user=0
+	ssr_speed_limit_per_user=1-131071
 	expr ${ssr_speed_limit_per_user} + 0 &>/dev/null
 	if [[ $? == 0 ]]; then
 		if [[ ${ssr_speed_limit_per_user} -ge 1 ]] && [[ ${ssr_speed_limit_per_user} -le 131072 ]]; then
