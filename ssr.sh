@@ -242,7 +242,8 @@ Set_config_port(){
 	while true
 	do
 	echo -e "请输入要设置的ShadowsocksR账号 端口"
-	ssr_port="2333"
+	stty erase '^H' && read -p "(默认: 2333):" ssr_port
+	[[ -z "$ssr_port" ]] && ssr_port="2333"
 	expr ${ssr_port} + 0 &>/dev/null
 	if [[ $? == 0 ]]; then
 		if [[ ${ssr_port} -ge 1 ]] && [[ ${ssr_port} -le 65535 ]]; then
@@ -258,7 +259,8 @@ Set_config_port(){
 }
 Set_config_password(){
 	echo "请输入要设置的ShadowsocksR账号 密码"
-	ssr_password="doub.io"
+	stty erase '^H' && read -p "(默认: doub.io):" ssr_password
+	[[ -z "${ssr_password}" ]] && ssr_password="doub.io"
 	echo && echo ${Separator_1} && echo -e "	密码 : ${Green_font_prefix}${ssr_password}${Font_color_suffix}" && echo ${Separator_1} && echo
 }
 Set_config_method(){
@@ -286,7 +288,43 @@ Set_config_method(){
  ${Green_font_prefix}15.${Font_color_suffix} chacha20
  ${Green_font_prefix}16.${Font_color_suffix} chacha20-ietf
  ${Tip} salsa20/chacha20-*系列加密方式，需要额外安装依赖 libsodium ，否则会无法启动ShadowsocksR !" && echo
-	ssr_method="aes-128-ctr"
+	stty erase '^H' && read -p "(默认: 5. aes-128-ctr):" ssr_method
+	[[ -z "${ssr_method}" ]] && ssr_method="5"
+	if [[ ${ssr_method} == "1" ]]; then
+		ssr_method="none"
+	elif [[ ${ssr_method} == "2" ]]; then
+		ssr_method="rc4"
+	elif [[ ${ssr_method} == "3" ]]; then
+		ssr_method="rc4-md5"
+	elif [[ ${ssr_method} == "4" ]]; then
+		ssr_method="rc4-md5-6"
+	elif [[ ${ssr_method} == "5" ]]; then
+		ssr_method="aes-128-ctr"
+	elif [[ ${ssr_method} == "6" ]]; then
+		ssr_method="aes-192-ctr"
+	elif [[ ${ssr_method} == "7" ]]; then
+		ssr_method="aes-256-ctr"
+	elif [[ ${ssr_method} == "8" ]]; then
+		ssr_method="aes-128-cfb"
+	elif [[ ${ssr_method} == "9" ]]; then
+		ssr_method="aes-192-cfb"
+	elif [[ ${ssr_method} == "10" ]]; then
+		ssr_method="aes-256-cfb"
+	elif [[ ${ssr_method} == "11" ]]; then
+		ssr_method="aes-128-cfb8"
+	elif [[ ${ssr_method} == "12" ]]; then
+		ssr_method="aes-192-cfb8"
+	elif [[ ${ssr_method} == "13" ]]; then
+		ssr_method="aes-256-cfb8"
+	elif [[ ${ssr_method} == "14" ]]; then
+		ssr_method="salsa20"
+	elif [[ ${ssr_method} == "15" ]]; then
+		ssr_method="chacha20"
+	elif [[ ${ssr_method} == "16" ]]; then
+		ssr_method="chacha20-ietf"
+	else
+		ssr_method="aes-128-ctr"
+	fi
 	echo && echo ${Separator_1} && echo -e "	加密 : ${Green_font_prefix}${ssr_method}${Font_color_suffix}" && echo ${Separator_1} && echo
 }
 Set_config_protocol(){
@@ -298,11 +336,28 @@ Set_config_protocol(){
  ${Green_font_prefix}5.${Font_color_suffix} auth_chain_a
  ${Green_font_prefix}6.${Font_color_suffix} auth_chain_b
  ${Tip} 如果使用 auth_chain_a 协议，请加密方式选择 none，混淆随意(建议 plain)" && echo
-	ssr_protocol="auth_sha1_v4"
+	stty erase '^H' && read -p "(默认: 2. auth_sha1_v4):" ssr_protocol
+	[[ -z "${ssr_protocol}" ]] && ssr_protocol="2"
+	if [[ ${ssr_protocol} == "1" ]]; then
+		ssr_protocol="origin"
+	elif [[ ${ssr_protocol} == "2" ]]; then
+		ssr_protocol="auth_sha1_v4"
+	elif [[ ${ssr_protocol} == "3" ]]; then
+		ssr_protocol="auth_aes128_md5"
+	elif [[ ${ssr_protocol} == "4" ]]; then
+		ssr_protocol="auth_aes128_sha1"
+	elif [[ ${ssr_protocol} == "5" ]]; then
+		ssr_protocol="auth_chain_a"
+	elif [[ ${ssr_protocol} == "6" ]]; then
+		ssr_protocol="auth_chain_b"
+	else
+		ssr_protocol="auth_sha1_v4"
+	fi
 	echo && echo ${Separator_1} && echo -e "	协议 : ${Green_font_prefix}${ssr_protocol}${Font_color_suffix}" && echo ${Separator_1} && echo
 	if [[ ${ssr_protocol} != "origin" ]]; then
 		if [[ ${ssr_protocol} == "auth_sha1_v4" ]]; then
-			ssr_protocol_yn="y"
+			stty erase '^H' && read -p "是否设置 协议插件兼容原版(_compatible)？[Y/n]" ssr_protocol_yn
+			[[ -z "${ssr_protocol_yn}" ]] && ssr_protocol_yn="y"
 			[[ $ssr_protocol_yn == [Yy] ]] && ssr_protocol=${ssr_protocol}"_compatible"
 			echo
 		fi
@@ -316,7 +371,21 @@ Set_config_obfs(){
  ${Green_font_prefix}4.${Font_color_suffix} random_head
  ${Green_font_prefix}5.${Font_color_suffix} tls1.2_ticket_auth
  ${Tip} 如果使用 ShadowsocksR 加速游戏，请选择 混淆兼容原版或 plain 混淆，然后客户端选择 plain，否则会增加延迟 !" && echo
-	ssr_obfs="plain"
+	stty erase '^H' && read -p "(默认: 5. tls1.2_ticket_auth):" ssr_obfs
+	[[ -z "${ssr_obfs}" ]] && ssr_obfs="5"
+	if [[ ${ssr_obfs} == "1" ]]; then
+		ssr_obfs="plain"
+	elif [[ ${ssr_obfs} == "2" ]]; then
+		ssr_obfs="http_simple"
+	elif [[ ${ssr_obfs} == "3" ]]; then
+		ssr_obfs="http_post"
+	elif [[ ${ssr_obfs} == "4" ]]; then
+		ssr_obfs="random_head"
+	elif [[ ${ssr_obfs} == "5" ]]; then
+		ssr_obfs="tls1.2_ticket_auth"
+	else
+		ssr_obfs="tls1.2_ticket_auth"
+	fi
 	echo && echo ${Separator_1} && echo -e "	混淆 : ${Green_font_prefix}${ssr_obfs}${Font_color_suffix}" && echo ${Separator_1} && echo
 	if [[ ${ssr_obfs} != "plain" ]]; then
 			stty erase '^H' && read -p "是否设置 混淆插件兼容原版(_compatible)？[Y/n]" ssr_obfs_yn
@@ -330,7 +399,8 @@ Set_config_protocol_param(){
 	do
 	echo -e "请输入要设置的ShadowsocksR账号 欲限制的设备数 (${Green_font_prefix} auth_* 系列协议 不兼容原版才有效 ${Font_color_suffix})"
 	echo -e "${Tip} 设备数限制：每个端口同一时间能链接的客户端数量(多端口模式，每个端口都是独立计算)，建议最少 2个。"
-	ssr_protocol_param="" && echo && break
+	stty erase '^H' && read -p "(默认: 无限):" ssr_protocol_param
+	[[ -z "$ssr_protocol_param" ]] && ssr_protocol_param="" && echo && break
 	expr ${ssr_protocol_param} + 0 &>/dev/null
 	if [[ $? == 0 ]]; then
 		if [[ ${ssr_protocol_param} -ge 1 ]] && [[ ${ssr_protocol_param} -le 9999 ]]; then
@@ -349,7 +419,8 @@ Set_config_speed_limit_per_con(){
 	do
 	echo -e "请输入要设置的每个端口 单线程 限速上限(单位：KB/S)"
 	echo -e "${Tip} 单线程限速：每个端口 单线程的限速上限，多线程即无效。"
-	ssr_speed_limit_per_con=0 && echo && break
+	stty erase '^H' && read -p "(默认: 无限):" ssr_speed_limit_per_con
+	[[ -z "$ssr_speed_limit_per_con" ]] && ssr_speed_limit_per_con=0 && echo && break
 	expr ${ssr_speed_limit_per_con} + 0 &>/dev/null
 	if [[ $? == 0 ]]; then
 		if [[ ${ssr_speed_limit_per_con} -ge 1 ]] && [[ ${ssr_speed_limit_per_con} -le 131072 ]]; then
@@ -369,7 +440,8 @@ Set_config_speed_limit_per_user(){
 	echo
 	echo -e "请输入要设置的每个端口 总速度 限速上限(单位：KB/S)"
 	echo -e "${Tip} 端口总限速：每个端口 总速度 限速上限，单个端口整体限速。"
-	ssr_speed_limit_per_user=0 && echo && break
+	stty erase '^H' && read -p "(默认: 无限):" ssr_speed_limit_per_user
+	[[ -z "$ssr_speed_limit_per_user" ]] && ssr_speed_limit_per_user=0 && echo && break
 	expr ${ssr_speed_limit_per_user} + 0 &>/dev/null
 	if [[ $? == 0 ]]; then
 		if [[ ${ssr_speed_limit_per_user} -ge 1 ]] && [[ ${ssr_speed_limit_per_user} -le 131072 ]]; then
@@ -523,7 +595,7 @@ Debian_apt(){
 Download_SSR(){
 	cd "/usr/local"
 	#git config --global http.sslVerify false
-	env GIT_SSL_NO_VERIFY=true git clone https://github.com/ToyoDAdoubi/shadowsocksr.git
+	env GIT_SSL_NO_VERIFY=true git clone -b manyuser https://github.com/ToyoDAdoubi/shadowsocksr.git
 	[[ ! -e ${ssr_folder} ]] && echo -e "${Error} ShadowsocksR服务端 下载失败 !" && exit 1
 	[[ -e ${config_folder} ]] && rm -rf ${config_folder}
 	mkdir ${config_folder}
@@ -1371,4 +1443,54 @@ echo -e "  ShadowsocksR 一键管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_
  ${Green_font_prefix}15.${Font_color_suffix} 升级脚本
  "
 menu_status
-Install_SSR
+echo && stty erase '^H' && read -p "请输入数字 [1-15]：" num
+case "$num" in
+	1)
+	Install_SSR
+	;;
+	2)
+	Update_SSR
+	;;
+	3)
+	Uninstall_SSR
+	;;
+	4)
+	Install_Libsodium
+	;;
+	5)
+	View_User
+	;;
+	6)
+	View_user_connection_info
+	;;
+	7)
+	Modify_Config
+	;;
+	8)
+	Manually_Modify_Config
+	;;
+	9)
+	Port_mode_switching
+	;;
+	10)
+	Start_SSR
+	;;
+	11)
+	Stop_SSR
+	;;
+	12)
+	Restart_SSR
+	;;
+	13)
+	View_Log
+	;;
+	14)
+	Other_functions
+	;;
+	15)
+	Update_Shell
+	;;
+	*)
+	echo -e "${Error} 请输入正确的数字 [1-15]"
+	;;
+esac
